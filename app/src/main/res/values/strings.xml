@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HTTPServer</string>
+    <string name="app_name">HttpServer</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="camera_permission">You did not authorize this permission, please open the authorization in the settings</string>

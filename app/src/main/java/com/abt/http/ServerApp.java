@@ -1,4 +1,4 @@
-package com.abt.httpserver;
+package com.abt.http;
 
 import android.app.Application;
 import android.util.Log;
@@ -6,12 +6,12 @@ import android.util.Log;
 /**
  * Created by hwq on 2017/10/27 0027.
  */
-public class LauncherApp extends Application {
+public class ServerApp extends Application {
 
-    private static final String TAG = LauncherApp.class.getSimpleName();
-    private static LauncherApp mLauncherApp;
+    private static final String TAG = ServerApp.class.getSimpleName();
+    private static ServerApp mLauncherApp;
 
-    public static LauncherApp getInstance() {
+    public static ServerApp getInstance() {
         return mLauncherApp;
     }
 
