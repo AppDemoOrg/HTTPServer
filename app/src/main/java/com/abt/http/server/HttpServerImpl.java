@@ -13,9 +13,12 @@ import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 
+/**
+http://192.168.0.100:8080/getFileList?dirPath=/sdcard
+http://192.168.0.100:8080/getFile?fileName=/sdcard/xxx.png
+*/
 public class HttpServerImpl extends NanoHTTPD {
 
-    public static final String TAG = HttpServerImpl.class.getSimpleName();
     public static final int DEFAULT_SERVER_PORT = 8080;
 
     private static final String REQUEST_ROOT = "/";
@@ -24,9 +27,6 @@ public class HttpServerImpl extends NanoHTTPD {
     private static final String REQUEST_ACTION_GET_FILE_LIST = "/getFileList";
     private static final String FILE_NAME = "fileName";
     private static final String DIR_PATH = "dirPath";
-
-    // http://172.22.158.31:8080/getFileList?dirPath=/sdcard
-    // http://172.22.158.31:8080/getFile?fileName=/sdcard/FaceFingerMatch_AD
 
     public HttpServerImpl() {
         super(DEFAULT_SERVER_PORT);
