@@ -1,9 +1,9 @@
 package com.abt.http.server;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.abt.http.util.FileUtils;
+import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +17,7 @@ public class HttpServerImpl extends NanoHTTPD {
 
     public static final String TAG = HttpServerImpl.class.getSimpleName();
     public static final int DEFAULT_SERVER_PORT = 8080;
+
     private static final String REQUEST_ROOT = "/";
     private static final String REQUEST_TEST = "/test";
     private static final String REQUEST_ACTION_GET_FILE = "/getFile";
@@ -35,24 +36,21 @@ public class HttpServerImpl extends NanoHTTPD {
     public Response serve(IHTTPSession session) {
     	String strUri = session.getUri();
     	String method = session.getMethod().name();
-        Log.d(TAG,"Response serve uri = " + strUri + ", method = " + method);
+        Logger.d("Response serve uri = " + strUri + ", method = " + method);
 
-        if (REQUEST_ROOT.equals(strUri)) {   // 根目录
+        if (REQUEST_ROOT.equals(strUri)) {                          // 根目录
             return responseRootPage(session);
-        } else if(REQUEST_TEST.equals(strUri)) {    // 返回给调用端json串
+        } else if(REQUEST_TEST.equals(strUri)) {                    // 返回给调用端json串
         	return responseJson();
         } else if(REQUEST_ACTION_GET_FILE_LIST.equals(strUri)) {    // 获取文件列表
         	Map<String,String> params = session.getParms();
-
         	String dirPath = params.get(DIR_PATH);
         	if (!TextUtils.isEmpty(dirPath)) {
         		return responseFileList(session,dirPath);
         	}        	
-        } else if(REQUEST_ACTION_GET_FILE.equals(strUri)) { // 下载文件
+        } else if(REQUEST_ACTION_GET_FILE.equals(strUri)) {         // 下载文件
         	Map<String,String> params = session.getParms();
-        	// 下载的文件名称
         	String fileName = params.get(FILE_NAME);
-
         	File file = new File(fileName);
         	if (file.exists()) {
         		if (file.isDirectory()) {
@@ -75,39 +73,24 @@ public class HttpServerImpl extends NanoHTTPD {
 
     /**
      * 返回给调用端LOG日志文件
-     * @param session
-     * @return
      */
     private Response responseFileStream(IHTTPSession session, String filePath) {
-    	Log.d(TAG, "responseFileStream() ,fileName = " + filePath);
+    	Logger.d("responseFileStream() ,fileName = " + filePath);
         try {
             FileInputStream fis = new FileInputStream(filePath);
             return NanoHTTPD.newChunkedResponse(Response.Status.OK, "application/octet-stream", fis);
         } catch (FileNotFoundException e) {
-            Log.d(TAG, "responseFileStream FileNotFoundException :" ,e);
+            Logger.d("responseFileStream FileNotFoundException :" ,e);
             return response404(session);
         }
     }
 
-    /*private NanoHTTPD.Response responseFileStream(IHTTPSession session, String filePath) {
-    	Log.d(TAG, "responseFileStream() ,fileName = " + filePath);
-        try {
-            FileInputStream fis = new FileInputStream(filePath);
-            return new NanoHTTPD.Response(Status.OK, "video/mp4", fis);
-        } catch (FileNotFoundException e) {
-            Log.d(TAG, "responseFileStream FileNotFoundException :" ,e);
-            //return response404(session);
-        }
-        return null;
-    }*/
-
     /**
      * @param session http请求
      * @param dirPath 文件夹路径名称
-     * @return
      */
     private Response responseFileList(IHTTPSession session, String dirPath) {
-    	Log.d(TAG, "responseFileList() , dirPath = " + dirPath);
+    	Logger.d("responseFileList() , dirPath = " + dirPath);
     	List <String> fileList = FileUtils.getFilePaths(dirPath, false);
     	StringBuilder sb = new StringBuilder();
     	for(String filePath : fileList){
@@ -118,9 +101,6 @@ public class HttpServerImpl extends NanoHTTPD {
 
     /**
      * 调用的路径出错
-     * @param session
-     * @param // url
-     * @return
      */
     private Response response404(IHTTPSession session) {
     	String url = session.getUri();
@@ -133,7 +113,6 @@ public class HttpServerImpl extends NanoHTTPD {
 
     /**
      * 返回给调用端json字符串
-     * @return
      */
     private Response responseJson() {
     	return NanoHTTPD.newFixedLengthResponse("Call success!!");

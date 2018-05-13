@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.abt.http.server.HttpServerImpl;
 import com.abt.http.server.HttpService;
@@ -24,20 +23,17 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_launcher);
         ButterKnife.bind(this);
 
-        String tips = new String("请在PC浏览器中输入:\n\n"+
-                IPAddressUtils.getLocalIP()+":"+
-                HttpServerImpl.DEFAULT_SERVER_PORT);
-
-        Toast.makeText(MainActivity.this, tips, Toast.LENGTH_SHORT).show();
-        mTips.setText(tips);
-
         Intent intent = new Intent(this, HttpService.class);
         startService(intent);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onResume() {
+        super.onResume();
+
+        String tips = new String("请在PC浏览器中输入:\n\n"+
+                IPAddressUtils.getLocalIP()+":"+HttpServerImpl.DEFAULT_SERVER_PORT);
+        mTips.setText(tips);
     }
 
 }
