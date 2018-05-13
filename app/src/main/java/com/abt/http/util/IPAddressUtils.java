@@ -12,22 +12,17 @@ import com.abt.http.R;
  */
 public class IPAddressUtils {
 
-    private static final String TAG = IPAddressUtils.class.getSimpleName();
-
     public static String getLocalIP() {
         WifiManager manager = (WifiManager) ServerApp.getInstance()
                 .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-        //检查Wifi状态
+        // 检查Wifi状态
         if (!manager.isWifiEnabled()) {
             return ServerApp.getInstance().getString(R.string.wifi_disable);
         }
         WifiInfo info = manager.getConnectionInfo();
-
-        //获取32位整型IP地址
+        // 获取32位整型IP地址
         int ipAddress = info.getIpAddress();
-
-        //把整型地址转换成“*.*.*.*”地址
+        // 把整型地址转换成“*.*.*.*”地址
         return intToIp(ipAddress);
     }
 
