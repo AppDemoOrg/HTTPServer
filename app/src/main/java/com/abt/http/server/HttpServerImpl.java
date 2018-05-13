@@ -2,12 +2,14 @@ package com.abt.http.server;
 
 import android.text.TextUtils;
 
+import com.abt.http.stream.Mp4FileInputStream;
 import com.abt.http.util.FileUtils;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +40,9 @@ public class HttpServerImpl extends NanoHTTPD {
     	String method = session.getMethod().name();
         Logger.d("Response serve uri = " + strUri + ", method = " + method);
 
-        if (REQUEST_ROOT.equals(strUri)) {                          // 根目录
+        if (REQUEST_ROOT.equals(strUri)) {                          // 访问根目录
             return responseRootPage(session);
-        } else if(REQUEST_TEST.equals(strUri)) {                    // 返回给调用端json串
+        } else if(REQUEST_TEST.equals(strUri)) {                    // 返回json串
         	return responseJson();
         } else if(REQUEST_ACTION_GET_FILE_LIST.equals(strUri)) {    // 获取文件列表
         	Map<String,String> params = session.getParms();
@@ -48,7 +50,7 @@ public class HttpServerImpl extends NanoHTTPD {
         	if (!TextUtils.isEmpty(dirPath)) {
         		return responseFileList(session,dirPath);
         	}        	
-        } else if(REQUEST_ACTION_GET_FILE.equals(strUri)) {         // 下载文件
+        } else if(REQUEST_ACTION_GET_FILE.equals(strUri)) {         // 获取文件
         	Map<String,String> params = session.getParms();
         	String fileName = params.get(FILE_NAME);
         	File file = new File(fileName);
@@ -56,7 +58,10 @@ public class HttpServerImpl extends NanoHTTPD {
         		if (file.isDirectory()) {
         			return responseFileList(session,fileName);
         		} else {
-        			return responseFileStream(session,fileName);
+        		    /*if (file.getPath().contains(".mp4")) {          // TODO mp4文件，Meta信息在文件尾部时，支持点播
+                        return responseForPlay(session, file);
+                    }*/
+                    return responseFileStream(session, fileName);   // 普通文件，返回文件流
         		}
         	}        	
         }
@@ -116,6 +121,26 @@ public class HttpServerImpl extends NanoHTTPD {
      */
     private Response responseJson() {
     	return NanoHTTPD.newFixedLengthResponse("Call success!!");
+    }
+
+    private final NanoHTTPD.Response responseForPlay(IHTTPSession session, File file) {
+        try {
+            NanoHTTPD.Response.Status status   = NanoHTTPD.Response.Status.OK;
+            final String mimeType             = "video/mp4"; // "application/octet-stream";
+            InputStream data                  = new Mp4FileInputStream(file);
+            long totalBytes                   = file.length();
+            final NanoHTTPD.Response response = NanoHTTPD.newFixedLengthResponse(
+                    status, mimeType, data, totalBytes);
+            // 填加文件名header，方便浏览器测试
+            final String fileName             = file.getName();
+            String desc = String.format("attachment; filename=\"%s\"", fileName);
+            response.addHeader("Content-Disposition", desc);
+            Logger.d("response success");
+            return response;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return response404(session);
+        }
     }
 
 }

@@ -1,10 +1,11 @@
-package com.abt.http;
+package com.abt.http.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.abt.http.R;
 import com.abt.http.server.HttpServerImpl;
 import com.abt.http.server.HttpService;
 import com.abt.http.util.IPAddressUtils;

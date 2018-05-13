@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:name="com.abt.http.ServerApp"
         android:theme="@style/AppTheme">
-        <activity android:name="com.abt.http.MainActivity">
+        <activity android:name="com.abt.http.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
