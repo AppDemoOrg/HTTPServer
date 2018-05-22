@@ -1,8 +1,8 @@
 # HTTPServer   
 
 ## Memo
-1、http://192.168.0.100:8080/getFileList?dirPath=/sdcard
-1、192.168.4.191:8080/getFile?fileName=/sdcard/movie.mp4
+1、http://192.168.0.100:8080/getFileList?dirPath=/sdcard    
+2、http://192.168.4.191:8080/getFile?fileName=/sdcard/movie.mp4
 
 
 ### 支持基本的HTTP请求   
